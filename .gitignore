@@ -1,0 +1,22 @@
+Exit code: 0
+Wall time: 1.5 seconds
+Output:
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Build artefacts and dependencies
+node_modules/
+.next/
+dist/
+coverage/
+
+# Editor state
+.vscode/
+.idea/
+
