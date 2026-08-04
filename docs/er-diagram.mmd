@@ -1,0 +1,149 @@
+erDiagram
+  ORGANIZATIONS {
+    uuid id PK
+    text name
+    text slug
+  }
+  USERS {
+    uuid id PK
+    uuid organization_id FK
+    text email
+    text display_name
+  }
+  ROLES {
+    uuid id PK
+    uuid organization_id FK
+    text name
+  }
+  USER_ROLES {
+    uuid id PK
+    uuid user_id FK
+    uuid role_id FK
+  }
+  ACCOUNTS {
+    uuid id PK
+    uuid organization_id FK
+    text name
+    text type
+    numeric balance
+  }
+  INSTRUMENTS {
+    uuid id PK
+    uuid organization_id FK
+    text symbol
+    text name
+    text asset_class
+  }
+  HOLDINGS {
+    uuid id PK
+    uuid account_id FK
+    uuid instrument_id FK
+    numeric quantity
+    numeric avg_cost
+    numeric market_value
+    timestamptz as_of
+  }
+  TRANSACTIONS {
+    uuid id PK
+    uuid account_id FK
+    uuid instrument_id FK
+    text type
+    numeric amount
+    date txn_date
+  }
+  INSTRUMENT_PRICES {
+    uuid instrument_id FK
+    date price_date PK
+    numeric close
+  }
+  PORTFOLIOS {
+    uuid id PK
+    uuid organization_id FK
+    text name
+  }
+  PORTFOLIO_POSITIONS {
+    uuid id PK
+    uuid portfolio_id FK
+    uuid instrument_id FK
+    numeric quantity
+  }
+  GOALS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    text name
+    numeric target_amount
+  }
+  SCENARIOS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    jsonb inputs
+  }
+  SCENARIO_RUNS {
+    uuid id PK
+    uuid scenario_id FK
+    jsonb result
+  }
+  DOCUMENTS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    text filename
+    text storage_path
+  }
+  DOCUMENT_EXTRACTIONS {
+    uuid id PK
+    uuid document_id FK
+    text extractor
+    jsonb extraction_result
+    text status
+  }
+  AUDIT_LOGS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    text event_type
+    jsonb payload
+  }
+  CONSENT_RECORDS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    text consent_type
+    boolean granted
+  }
+  IMPORTS {
+    uuid id PK
+    uuid organization_id FK
+    uuid user_id FK
+    text source
+    text status
+  }
+
+  ORGANIZATIONS ||--o{ USERS : "has"
+  ORGANIZATIONS ||--o{ ACCOUNTS : "owns"
+  ORGANIZATIONS ||--o{ INSTRUMENTS : "maintains"
+  ORGANIZATIONS ||--o{ DOCUMENTS : "stores"
+  ORGANIZATIONS ||--o{ PORTFOLIOS : "has"
+  ORGANIZATIONS ||--o{ GOALS : "owns"
+  ORGANIZATIONS ||--o{ SCENARIOS : "owns"
+  ORGANIZATIONS ||--o{ IMPORTS : "initiates"
+  ORGANIZATIONS ||--o{ AUDIT_LOGS : "logs"
+
+  USERS ||--o{ USER_ROLES : "assigned"
+  ROLES ||--o{ USER_ROLES : "contains"
+  USERS ||--o{ GOALS : "creates"
+  USERS ||--o{ SCENARIOS : "creates"
+  USERS ||--o{ DOCUMENTS : "uploads"
+
+  ACCOUNTS ||--o{ HOLDINGS : "contains"
+  INSTRUMENTS ||--o{ HOLDINGS : "is_in"
+  ACCOUNTS ||--o{ TRANSACTIONS : "has"
+  INSTRUMENTS ||--o{ TRANSACTIONS : "referenced_by"
+  INSTRUMENTS ||--o{ INSTRUMENT_PRICES : "has_prices"
+  PORTFOLIOS ||--o{ PORTFOLIO_POSITIONS : "contains"
+  PORTFOLIO_POSITIONS }o--|| INSTRUMENTS : "refers_to"
+
+  DOCUMENTS ||--o{ DOCUMENT_EXTRACTIONS : "extracted_by"
+  SCENARIOS ||--o{ SCENARIO_RUNS : "produces"
