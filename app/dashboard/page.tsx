@@ -17,6 +17,11 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { getDashboardSummary } from '@/services/dashboard';
 
+// Financial data must be fetched at request time, not captured at build time.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 function formatINR(value: number): string {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
