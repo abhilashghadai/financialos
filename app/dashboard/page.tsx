@@ -14,6 +14,7 @@ import {
   TrendingUp,
   WalletCards,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { getDashboardSummary } from '@/services/dashboard';
 
 function formatINR(value: number): string {
@@ -63,7 +64,7 @@ function NetWorthChart() {
   );
 }
 
-const nav = [
+const nav: Array<[LucideIcon, string]> = [
   [LayoutDashboard, 'Command centre'],
   [PieChart, 'Portfolio'],
   [WalletCards, 'Cash flow'],
@@ -92,19 +93,19 @@ export default async function DashboardPage() {
         </div>
         <nav className="space-y-1">
           {nav.map(([Icon, label], index) => {
-            const CurrentIcon = Icon as typeof LayoutDashboard;
+            const CurrentIcon = Icon;
             return <a key={label} href="#" className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${index === 0 ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}><CurrentIcon size={16} strokeWidth={1.8} />{label}</a>;
           })}
         </nav>
         <div className="mt-auto border-t border-white/10 px-2 pt-4">
-          <div className="mb-4 flex gap-2 text-[9px] leading-4 tracking-[.08em] text-[#93aa9e]"><span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#caf060]" />DATA SYNCHRONIZED<br /><span className="tracking-normal text-[#718d7e]">Updated from Supabase</span></div>
+          <div className="mb-4 flex gap-2 text-[9px] leading-4 tracking-[.08em] text-[#93aa9e]"><span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#caf060]" />DATA SYNCHRONIZED<br /><span className="tracking-normal text-[#718d7e]">{summary.dataMode === 'live' ? 'Updated from Supabase' : 'Connect Supabase to go live'}</span></div>
           <a href="#" className="flex items-center gap-3 text-xs font-semibold text-[#9bb0a4]"><Settings size={15} /> Settings</a>
         </div>
       </aside>
 
       <section className="min-h-screen lg:ml-[248px]">
         <header className="flex items-center justify-between px-5 py-6 sm:px-9 lg:px-12">
-          <div><p className="font-mono text-[10px] tracking-[.13em] text-slate-500">LIVE FINANCIAL POSITION</p><h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-[27px]">Good morning, Abhilash.</h1><p className="mt-1 text-xs text-slate-500">Your financial operating system is up to date.</p></div>
+          <div><p className="font-mono text-[10px] tracking-[.13em] text-slate-500">{summary.dataMode === 'live' ? 'LIVE FINANCIAL POSITION' : 'DEMO FINANCIAL POSITION'}</p><h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-[27px]">Good morning, Abhilash.</h1><p className="mt-1 text-xs text-slate-500">Your financial operating system is up to date.</p></div>
           <div className="flex items-center gap-2"><button aria-label="Notifications" className="grid h-9 w-9 place-items-center rounded-lg border border-[#dce6df] bg-white text-slate-600"><Bell size={16} /></button><button className="hidden items-center gap-2 rounded-lg bg-[#087059] px-3.5 py-2.5 text-xs font-bold text-white sm:flex"><Sparkles size={14} />Add financial data</button></div>
         </header>
 
