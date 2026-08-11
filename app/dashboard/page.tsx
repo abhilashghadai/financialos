@@ -14,6 +14,7 @@ import {
   TrendingUp,
   WalletCards,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { getDashboardSummary } from '@/services/dashboard';
 
 function formatINR(value: number): string {
@@ -63,7 +64,7 @@ function NetWorthChart() {
   );
 }
 
-const nav = [
+const nav: Array<[LucideIcon, string]> = [
   [LayoutDashboard, 'Command centre'],
   [PieChart, 'Portfolio'],
   [WalletCards, 'Cash flow'],
@@ -92,7 +93,7 @@ export default async function DashboardPage() {
         </div>
         <nav className="space-y-1">
           {nav.map(([Icon, label], index) => {
-            const CurrentIcon = Icon as typeof LayoutDashboard;
+            const CurrentIcon = Icon;
             return <a key={label} href="#" className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${index === 0 ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}><CurrentIcon size={16} strokeWidth={1.8} />{label}</a>;
           })}
         </nav>
