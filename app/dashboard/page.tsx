@@ -13,6 +13,7 @@ import {
   Target,
   TrendingUp,
   WalletCards,
+  type LucideIcon,
 } from 'lucide-react';
 import { getDashboardSummary } from '@/services/dashboard';
 
@@ -63,13 +64,19 @@ function NetWorthChart() {
   );
 }
 
-const nav = [
-  [LayoutDashboard, 'Command centre'],
-  [PieChart, 'Portfolio'],
-  [WalletCards, 'Cash flow'],
-  [Target, 'Goals & retirement'],
-  [CreditCard, 'Debt optimizer'],
-  [ShieldCheck, 'Protection'],
+type NavItem = {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+};
+
+const nav: NavItem[] = [
+  { icon: LayoutDashboard, label: 'Command centre', href: '/dashboard' },
+  { icon: PieChart, label: 'Portfolio', href: '/portfolio' },
+  { icon: WalletCards, label: 'Cash flow', href: '/cashflow' },
+  { icon: Target, label: 'Goals & retirement', href: '/goals' },
+  { icon: CreditCard, label: 'Debt optimizer', href: '/debt' },
+  { icon: ShieldCheck, label: 'Protection', href: '/protection' },
 ];
 
 export default async function DashboardPage() {
@@ -91,14 +98,16 @@ export default async function DashboardPage() {
           <div><p className="text-xs font-bold text-white">Abhilash Kumar</p><p className="mt-0.5 text-[10px] text-[#95b0a1]">Private client · India</p></div>
         </div>
         <nav className="space-y-1">
-          {nav.map(([Icon, label], index) => {
-            const CurrentIcon = Icon as typeof LayoutDashboard;
-            return <a key={label} href="#" className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${index === 0 ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}><CurrentIcon size={16} strokeWidth={1.8} />{label}</a>;
-          })}
+          {nav.map(({ icon: Icon, label, href }, index) => (
+            <a key={label} href={href} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${index === 0 ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}>
+              <Icon size={16} strokeWidth={1.8} />
+              {label}
+            </a>
+          ))}
         </nav>
         <div className="mt-auto border-t border-white/10 px-2 pt-4">
           <div className="mb-4 flex gap-2 text-[9px] leading-4 tracking-[.08em] text-[#93aa9e]"><span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#caf060]" />DATA SYNCHRONIZED<br /><span className="tracking-normal text-[#718d7e]">Updated from Supabase</span></div>
-          <a href="#" className="flex items-center gap-3 text-xs font-semibold text-[#9bb0a4]"><Settings size={15} /> Settings</a>
+          <a href="/settings" className="flex items-center gap-3 text-xs font-semibold text-[#9bb0a4]"><Settings size={15} /> Settings</a>
         </div>
       </aside>
 
@@ -150,5 +159,5 @@ function Metric({ icon, color, title, value, detail }: { icon: React.ReactNode; 
 }
 
 function Status({ label, done = false }: { label: string; done?: boolean }) {
-  return <p className="flex items-center justify-between border-b border-[#edf1ee] pb-2 last:border-0"><span className="text-slate-600">{label}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${done ? 'bg-[#e9f4e5] text-[#3b784b]' : 'bg-[#f1f3f1] text-slate-500'}`}>{done ? 'READY' : 'NEXT'}</span></p>;
+  return <p className="flex items-center justify-between border-b border-[#edf1ee] pb-2 last:border-0"><span className="text-slate-600">{label}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${done ? 'bg-[#e8f1d9] text-[#587517]' : 'bg-[#f0f2f1] text-slate-400'}`}>{done ? 'READY' : 'NEXT'}</span></p>;
 }
