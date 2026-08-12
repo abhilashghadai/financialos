@@ -27,6 +27,7 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
       .from('networth_snapshot')
       .select('assets, liabilities, networth, snapshot_date')
       .order('snapshot_date', { ascending: false })
+      .order('id', { ascending: false })
       .limit(1),
     supabase.from('salary_profile').select('monthly_net').order('updated_at', { ascending: false }).limit(1),
     supabase.from('investment_holdings').select('id, asset_name, asset_type, platform, current_value').order('current_value', { ascending: false }),
