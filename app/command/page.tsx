@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { Sparkles, Terminal, TrendingUp, Wallet, CreditCard, Target } from 'lucide-react';
 import { getDashboardSummary } from '@/services/dashboard';
 
@@ -13,20 +16,35 @@ function formatLakhs(value: number): string {
   return `₹${(value / 100000).toFixed(2)}L`;
 }
 
+function formatSyncTime(): string {
+  return new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(new Date());
+}
+
 export default async function CommandPage() {
   const summary = await getDashboardSummary();
   const debtRatio = summary.totalAssets > 0
     ? Math.round((summary.totalLiabilities / summary.totalAssets) * 100)
     : 0;
+  const syncedAt = formatSyncTime();
 
   return (
     <main className="min-h-screen bg-black px-4 py-6 font-mono text-emerald-300 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-4 flex items-center gap-3 border-b border-emerald-900/60 pb-4">
           <Terminal size={18} />
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-semibold text-emerald-200">FINOS COMMAND TERMINAL</p>
             <p className="text-[11px] text-emerald-700">Live financial data stream · Supabase</p>
+          </div>
+          <div className="text-right text-[10px] text-emerald-700">
+            <p>LAST SYNC</p>
+            <p className="text-emerald-300">{syncedAt} IST</p>
           </div>
         </div>
 
