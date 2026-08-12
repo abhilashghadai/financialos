@@ -10,6 +10,7 @@ import {
   Settings,
   ShieldCheck,
   Sparkles,
+  Terminal,
   Target,
   TrendingUp,
   WalletCards,
@@ -72,6 +73,7 @@ type NavItem = {
 
 const nav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Command centre', href: '/dashboard' },
+  { icon: Terminal, label: 'Terminal', href: '/command' },
   { icon: PieChart, label: 'Portfolio', href: '/portfolio' },
   { icon: WalletCards, label: 'Cash flow', href: '/cashflow' },
   { icon: Target, label: 'Goals & retirement', href: '/goals' },
@@ -98,8 +100,8 @@ export default async function DashboardPage() {
           <div><p className="text-xs font-bold text-white">Abhilash Kumar</p><p className="mt-0.5 text-[10px] text-[#95b0a1]">Private client · India</p></div>
         </div>
         <nav className="space-y-1">
-          {nav.map(({ icon: Icon, label, href }, index) => (
-            <a key={label} href={href} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${index === 0 ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}>
+          {nav.map(({ icon: Icon, label, href }) => (
+            <a key={label} href={href} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${label === 'Command centre' ? 'bg-[#29483d] text-white' : 'text-[#a0b6aa] hover:bg-white/5 hover:text-white'}`}>
               <Icon size={16} strokeWidth={1.8} />
               {label}
             </a>
@@ -159,5 +161,5 @@ function Metric({ icon, color, title, value, detail }: { icon: React.ReactNode; 
 }
 
 function Status({ label, done = false }: { label: string; done?: boolean }) {
-  return <p className="flex items-center justify-between border-b border-[#edf1ee] pb-2 last:border-0"><span className="text-slate-600">{label}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${done ? 'bg-[#e8f1d9] text-[#587517]' : 'bg-[#f0f2f1] text-slate-400'}`}>{done ? 'READY' : 'NEXT'}</span></p>;
+  return <p className="flex items-center justify-between border-b border-[#edf1ee] pb-2 last:border-0"><span className="text-slate-600">{label}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${done ? 'bg-[#e6f1df] text-[#5b7a22]' : 'bg-[#f3f4f3] text-slate-400'}`}>{done ? 'READY' : 'NEXT'}</span></p>;
 }
