@@ -23,7 +23,11 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
     { data: salaryRows, error: salaryError },
     { data: investmentRows, error: investmentError },
   ] = await Promise.all([
-    supabase.from('networth_snapshot').select('assets, liabilities, networth').order('created_at', { ascending: false }).limit(1),
+    supabase
+      .from('networth_snapshot')
+      .select('assets, liabilities, networth, snapshot_date')
+      .order('snapshot_date', { ascending: false })
+      .limit(1),
     supabase.from('salary_profile').select('monthly_net').order('updated_at', { ascending: false }).limit(1),
     supabase.from('investment_holdings').select('id, asset_name, asset_type, platform, current_value').order('current_value', { ascending: false }),
   ]);
