@@ -1,0 +1,23 @@
+'use client';
+
+import type { DashboardSummary } from '@/services/dashboard';
+import { Sparkles, Terminal } from 'lucide-react';
+
+const inr=(value:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(value);
+const lakhs=(value:number)=>`₹${(value/100000).toFixed(2)}L`;
+
+export function AICommandView({summary}:{summary:DashboardSummary}){
+  const debtRatio=summary.totalAssets>0?Math.round((summary.totalLiabilities/summary.totalAssets)*100):0;
+  return <div className="rounded-2xl border border-emerald-900/70 bg-black font-mono text-emerald-300 shadow-[0_0_40px_rgba(16,185,129,.06)]">
+    <div className="flex items-center gap-3 border-b border-emerald-900/60 px-4 py-4 sm:px-6"><Terminal size={18}/><div className="flex-1"><p className="text-sm font-semibold text-emerald-200">FINOS AI COMMAND CENTER</p><p className="text-[11px] text-emerald-700">Supabase financial stream · AI layer not connected</p></div><div className="text-right text-[10px] text-emerald-700"><p>STATUS</p><p className="text-emerald-300">ONLINE</p></div></div>
+    <div className="bg-[#03120d] p-4 sm:p-6">
+      <p className="text-xs text-emerald-700">$ finos status</p><div className="mt-2 text-sm leading-7 sm:text-base"><p><span className="text-emerald-700">system</span> :: ONLINE</p><p><span className="text-emerald-700">source</span> :: SUPABASE</p><p><span className="text-emerald-700">portfolio</span> :: {summary.holdings.length} holdings loaded</p><p><span className="text-emerald-700">net_worth</span> :: <span className="text-emerald-100">{lakhs(summary.netWorth)}</span></p></div>
+      <div className="my-5 h-px bg-emerald-950"/><p className="text-xs text-emerald-700">$ finos snapshot --today</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><Metric label="NET WORTH" value={lakhs(summary.netWorth)}/><Metric label="ASSETS" value={lakhs(summary.totalAssets)}/><Metric label="LIABILITIES" value={lakhs(summary.totalLiabilities)}/><Metric label="NET SALARY" value={inr(summary.monthlyNetSalary)}/></div>
+      <div className="my-5 h-px bg-emerald-950"/><p className="text-xs text-emerald-700">$ finos portfolio --top 4</p><div className="mt-3 space-y-2 text-xs sm:text-sm">{summary.holdings.slice(0,4).map(h=><div key={h.id} className="grid grid-cols-[1fr_auto] gap-4 border-b border-emerald-950 pb-2"><span><span className="text-emerald-200">{h.assetName}</span><span className="ml-2 text-emerald-700">[{h.assetType||'Investment'}]</span></span><span className="text-emerald-100">{lakhs(h.currentValue)}</span></div>)}</div>
+      <div className="my-5 h-px bg-emerald-950"/><p className="text-xs text-emerald-700">$ finos health --quickscan</p><div className="mt-3 space-y-2 text-sm"><p><span className="text-lime-300">[GOOD]</span> Investment base is {lakhs(summary.totalInvestments)}.</p><p><span className={debtRatio<30?'text-lime-300':'text-amber-300'}>[{debtRatio<30?'GOOD':'WATCH'}]</span> Debt-to-assets ratio is {debtRatio}%.</p><p><span className="text-sky-300">[INFO]</span> Monthly net salary is {inr(summary.monthlyNetSalary)}.</p></div>
+      <div className="mt-6 rounded-lg border border-emerald-900 bg-black/30 p-4"><div className="flex items-center gap-2 text-emerald-200"><Sparkles size={14}/><span className="text-xs uppercase tracking-[0.2em]">AI CO-PILOT</span></div><p className="mt-3 text-sm text-emerald-700">Reasoning layer is intentionally disconnected for now.</p><p className="mt-2 text-sm leading-6 text-emerald-300">Later, commands like <span className="text-emerald-100">analyze portfolio</span>, <span className="text-emerald-100">show debt</span>, and natural-language questions will execute against structured financial context.</p><div className="mt-3 border-t border-emerald-950 pt-3 text-sm text-emerald-700">$ ask _</div></div>
+    </div>
+  </div>;
+}
+function Metric({label,value}:{label:string;value:string}){return <div className="rounded-lg border border-emerald-950 bg-black/30 p-3"><span className="text-[10px] tracking-[0.18em] text-emerald-700">{label}</span><p className="mt-2 text-lg font-semibold text-emerald-100">{value}</p></div>}
