@@ -18,29 +18,24 @@ export type DashboardSummary = {
   dataMode: 'live' | 'demo';
 };
 
-const demoSummary: DashboardSummary = {
-  netWorth: 809000,
-  totalAssets: 1499000,
-  totalInvestments: 1499000,
-  totalLiabilities: 690000,
-  monthlyNetSalary: 205000,
-  dataMode: 'demo',
-  holdings: [
-    { id: 1, assetName: 'Equity mutual funds', assetType: 'Mutual Fund', platform: 'CAMS', currentValue: 620000 },
-    { id: 2, assetName: 'Indian equities', assetType: 'Stocks', platform: 'Zerodha', currentValue: 380000 },
-    { id: 3, assetName: 'Employee Provident Fund', assetType: 'EPF', platform: null, currentValue: 250000 },
-    { id: 4, assetName: 'US ETF portfolio', assetType: 'ETF', platform: 'US broker', currentValue: 160000 },
-    { id: 5, assetName: 'Emergency reserve', assetType: 'Cash', platform: 'Bank', currentValue: 80000 },
-  ],
+const emptyLiveSummary: DashboardSummary = {
+  netWorth: 0,
+  totalAssets: 0,
+  totalInvestments: 0,
+  totalLiabilities: 0,
+  monthlyNetSalary: 0,
+  dataMode: 'live',
+  holdings: [],
 };
 
 /**
- * Returns live financial data where Supabase is configured and reachable.
- * Preview deployments remain useful even without secrets or while the database
- * is unavailable, rather than turning into a Vercel build/runtime failure.
+ * Returns live financial data when Supabase is configured and reachable.
+ * We intentionally return an empty live state instead of financial sample data
+ * so the dashboard never presents fabricated holdings while integrations are
+ * being connected.
  */
 export async function getDashboardSummary(): Promise<DashboardSummary> {
-  if (!isSupabaseConfigured || !supabase) return demoSummary;
+  if (!isSupabaseConfigured || !supabase) return emptyLiveSummary;
 
   try {
     const [
@@ -48,9 +43,20 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
       { data: salaryRows, error: salaryError },
       { data: investmentRows, error: investmentError },
     ] = await Promise.all([
-      supabase.from('networth_snapshot').select('assets, liabilities, networth').order('created_at', { ascending: false }).limit(1),
-      supabase.from('salary_profile').select('monthly_net').order('updated_at', { ascending: false }).limit(1),
-      supabase.from('investment_holdings').select('id, asset_name, asset_type, platform, current_value').order('current_value', { ascending: false }),
+      supabase
+        .from('networth_snapshot')
+        .select('assets, liabilities, networth')
+        .order('created_at', { ascending: false })
+        .limit(1),
+      supabase
+        .from('salary_profile')
+        .select('monthly_net')
+        .order('updated_at', { ascending: false })
+        .limit(1),
+      supabase
+        .from('investment_holdings')
+        .select('id, asset_name, asset_type, platform, current_value')
+        .order('current_value', { ascending: false }),
     ]);
 
     if (networthError || salaryError || investmentError) {
@@ -77,7 +83,7 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
       dataMode: 'live',
     };
   } catch (error) {
-    console.error('FinancialOS dashboard data fallback:', error);
-    return demoSummary;
+    console.error('FinancialOS dashboard data error:', error);
+    return emptyLiveSummary;
   }
 }
