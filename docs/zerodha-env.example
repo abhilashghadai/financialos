@@ -1,0 +1,5 @@
+# Kite Connect Personal credentials
+# DO NOT commit real values to Git.
+KITE_API_KEY=
+KITE_API_SECRET=
+KITE_ACCESS_TOKEN=
