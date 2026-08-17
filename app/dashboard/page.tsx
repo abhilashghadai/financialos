@@ -1,6 +1,6 @@
 import { getDashboardSummary } from '@/services/dashboard';
 import { AppShell } from '@/components/dashboard/AppShell';
-import { DashboardView } from '@/components/dashboard/DashboardView';
+import { DashboardV3 } from '@/components/dashboard/DashboardV3';
 import { AICommandView } from '@/components/dashboard/AICommandView';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +12,7 @@ export default async function DashboardPage() {
 
   return (
     <AppShell
-      dashboard={<DashboardView summary={summary} />}
+      dashboard={<DashboardV3 summary={summary} />}
       ai={<AICommandView summary={summary} />}
     />
   );
