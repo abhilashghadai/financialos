@@ -1,17 +1,18 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const key = supabasePublishableKey ?? supabaseAnonKey;
 
-/**
- * Vercel evaluates environment variables during the production build. Keep the
- * app deployable when a preview deployment has not been given Supabase values;
- * the dashboard service will render safe demo data in that case.
- */
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured = Boolean(supabaseUrl && key);
 
 export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl!, supabaseAnonKey!, {
-      auth: { persistSession: false, autoRefreshToken: false },
+  ? createBrowserClient(supabaseUrl!, key!, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
     })
   : null;
